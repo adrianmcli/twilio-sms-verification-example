@@ -13,15 +13,18 @@ app.get("/", function(req, res) {
 });
 
 app.post("/submit/phone", function(req, res) {
-  const phoneNumber = req.body.phoneNumber;
+  const { phoneNumber, countryCode } = req.body;
   console.log("Phone number received: " + phoneNumber);
-  res.status(200).json({ phoneNumber });
+  console.log("Country: " + countryCode);
+  res.status(200).json({ phoneNumber, countryCode });
 });
 
-app.post("/submit/code", function(req, res) {
-  const verificationCode = req.body.code;
-  console.log("Verification code received: " + verificationCode);
-  res.status(200).json({ verificationCode });
+app.post("/submit/verify", function(req, res) {
+  const { code, phoneNumber, countryCode } = req.body;
+  console.log("Verification code received: " + code);
+  console.log("Phone number received: " + phoneNumber);
+  console.log("Country: " + countryCode);
+  res.status(200).json({ code, phoneNumber, countryCode });
 });
 
 app.listen(4000, function() {

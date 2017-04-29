@@ -10,6 +10,7 @@ import { validatePhoneNumber, validateVerificationCode } from "./utils";
 
 class App extends Component {
   state = {
+    countryCode: "US",
     phoneNumber: "",
     verificationCode: "",
     SMSSent: false,
@@ -17,9 +18,9 @@ class App extends Component {
   };
 
   submitPhoneNumberInput = () => {
-    const { phoneNumber } = this.state;
+    const { countryCode, phoneNumber } = this.state;
     if (validatePhoneNumber(phoneNumber)) {
-      submitPhoneNumber(phoneNumber).then(res => {
+      submitPhoneNumber(phoneNumber, countryCode).then(res => {
         if (res.status === 200) {
           console.log("SMS Sent!");
           this.setState({ SMSSent: true });
@@ -31,9 +32,13 @@ class App extends Component {
   };
 
   submitVerificationCodeInput = () => {
-    const { verificationCode } = this.state;
+    const { verificationCode, phoneNumber, countryCode } = this.state;
     if (validateVerificationCode(verificationCode)) {
-      submitVerificationCode(verificationCode).then(res => {
+      submitVerificationCode(
+        verificationCode,
+        phoneNumber,
+        countryCode
+      ).then(res => {
         if (res.status === 200) {
           console.log("Phone Verified!");
           this.setState({ numberVerified: true });
@@ -43,6 +48,8 @@ class App extends Component {
       alert("Please enter a valid phone number.");
     }
   };
+
+  handleCountryChange = e => this.setState({ countryCode: e.target.value });
 
   handleInputChange = ({ target }) => {
     const { id, value } = target;
@@ -61,6 +68,13 @@ class App extends Component {
         {showPhoneNumberForm &&
           <div>
             <h2>Enter your phone number:</h2>
+            <select
+              value={this.state.value}
+              onChange={this.handleCountryChange}
+            >
+              <option selected value="US">United States (+1)</option>
+              <option value="CA">Canada (+1)</option>
+            </select>
             <input
               id="phoneNumber"
               type="text"

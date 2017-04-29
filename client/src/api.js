@@ -8,8 +8,15 @@ const sendRequest = (url, payload) =>
     body: JSON.stringify(payload),
   });
 
-export const submitPhoneNumber = phoneNumber =>
-  sendRequest("http://localhost:4000/submit/phone", { phoneNumber });
+export const submitPhoneNumber = (phoneNumber, countryCode) =>
+  sendRequest("http://localhost:4000/submit/phone", {
+    phoneNumber,
+    countryCode,
+  });
 
-export const submitVerificationCode = code =>
-  sendRequest("http://localhost:4000/submit/code", { code });
+export const submitVerificationCode = (code, phoneNumber, countryCode) =>
+  sendRequest("http://localhost:4000/submit/verify", {
+    code,
+    phoneNumber,
+    countryCode,
+  });
