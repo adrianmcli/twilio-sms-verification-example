@@ -19,8 +19,12 @@ class App extends Component {
   submitPhoneNumberInput = () => {
     const { phoneNumber } = this.state;
     if (validatePhoneNumber(phoneNumber)) {
-      submitPhoneNumber(phoneNumber);
-      // TODO - if success, set SMSSent to true
+      submitPhoneNumber(phoneNumber).then(res => {
+        if (res.status === 200) {
+          console.log("SMS Sent!");
+          this.setState({ SMSSent: true });
+        }
+      });
     } else {
       alert("Please enter a valid phone number.");
     }
@@ -29,8 +33,12 @@ class App extends Component {
   submitVerificationCodeInput = () => {
     const { verificationCode } = this.state;
     if (validateVerificationCode(verificationCode)) {
-      submitVerificationCode(verificationCode);
-      // TODO - If success, set Verified to true
+      submitVerificationCode(verificationCode).then(res => {
+        if (res.status === 200) {
+          console.log("Phone Verified!");
+          this.setState({ numberVerified: true });
+        }
+      });
     } else {
       alert("Please enter a valid phone number.");
     }
@@ -42,41 +50,52 @@ class App extends Component {
   };
 
   render() {
+    const { SMSSent, numberVerified } = this.state;
+    const showPhoneNumberForm = !SMSSent;
+    const showVerificationCodeForm = SMSSent && !numberVerified;
+    const showFinalMessage = SMSSent && numberVerified;
     return (
       <div>
+
         {/*Phone Input Form*/}
-        <div>
-          <h2>Enter your phone number:</h2>
-          <input
-            id="phoneNumber"
-            type="text"
-            placeholder="(416)-555-5555"
-            value={this.state.phoneNumber}
-            onChange={this.handleInputChange}
-          />
-          <button onClick={this.submitPhoneNumberInput}>
-            Send Verification SMS
-          </button>
-        </div>
+        {showPhoneNumberForm &&
+          <div>
+            <h2>Enter your phone number:</h2>
+            <input
+              id="phoneNumber"
+              type="text"
+              placeholder="(416)-555-5555"
+              value={this.state.phoneNumber}
+              onChange={this.handleInputChange}
+            />
+            <button onClick={this.submitPhoneNumberInput}>
+              Send Verification SMS
+            </button>
+          </div>}
+
         {/*SMS Sent*/}
-        <div>
-          <h2>Verification SMS Sent!</h2>
-          <div>Enter your verification code:</div>
-          <input
-            id="verificationCode"
-            type="text"
-            value={this.state.verificationCode}
-            onChange={this.handleInputChange}
-          />
-          <button onClick={this.submitVerificationCodeInput}>Verify</button>
-        </div>
+        {showVerificationCodeForm &&
+          <div>
+            <h2>Verification SMS Sent!</h2>
+            <div>Enter your verification code:</div>
+            <input
+              id="verificationCode"
+              type="text"
+              value={this.state.verificationCode}
+              onChange={this.handleInputChange}
+            />
+            <button onClick={this.submitVerificationCodeInput}>Verify</button>
+          </div>}
+
         {/*Verified Block*/}
-        <div>
-          <h2>Verified!</h2>
-          <button onClick={() => alert("Success! Go to next page.")}>
-            Click to Continue
-          </button>
-        </div>
+        {showFinalMessage &&
+          <div>
+            <h2>Verified!</h2>
+            <button onClick={() => alert("Success! Go to next page.")}>
+              Click to Continue
+            </button>
+          </div>}
+
       </div>
     );
   }
