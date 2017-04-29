@@ -72,7 +72,7 @@ class App extends Component {
               value={this.state.value}
               onChange={this.handleCountryChange}
             >
-              <option selected value="US">United States (+1)</option>
+              <option value="US">United States (+1)</option>
               <option value="CA">Canada (+1)</option>
             </select>
             <input
