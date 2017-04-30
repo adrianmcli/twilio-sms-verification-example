@@ -8,10 +8,6 @@ app.use(cors());
 
 app.use(bodyParser.json()); // for parsing application/json
 
-app.get("/", function(req, res) {
-  res.send("Hello World!");
-});
-
 // Initialize Authy stuff
 // const Client = require('authy-client').Client;
 // const authy = new Client({key: AUTHY_API_KEY});
