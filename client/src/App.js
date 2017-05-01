@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 
-import { submitPhoneNumber, submitVerificationCode } from "./api";
-import { validatePhoneNumber, validateVerificationCode } from "./utils";
-
-// 1. Validate phone number.
-// 2. Make API call to submit phone number (return 200 to indicate SMS sent).
-// 3. Validate verification code.
-// 4. Make API call to submit verification code (return 200 to indicate success).
+import {
+  validatePhoneNumber,
+  validateVerificationCode,
+  requestVerificationStart,
+  requestVerifyCode,
+} from "./utils";
 
 class App extends Component {
   state = {
@@ -18,34 +17,28 @@ class App extends Component {
   };
 
   submitPhoneNumberInput = () => {
-    const { countryCode, phoneNumber } = this.state;
-    if (validatePhoneNumber(phoneNumber)) {
-      submitPhoneNumber(phoneNumber, countryCode).then(res => {
-        if (res.status === 200) {
-          console.log("SMS Sent!");
-          this.setState({ SMSSent: true });
-        }
-      });
+    const { countryCode, phoneNumber: phone } = this.state;
+    if (validatePhoneNumber(phone)) {
+      requestVerificationStart(phone, countryCode, () =>
+        this.setState({ SMSSent: true })
+      );
     } else {
       alert("Please enter a valid phone number.");
     }
   };
 
   submitVerificationCodeInput = () => {
-    const { verificationCode, phoneNumber, countryCode } = this.state;
-    if (validateVerificationCode(verificationCode)) {
-      submitVerificationCode(
-        verificationCode,
-        phoneNumber,
-        countryCode
-      ).then(res => {
-        if (res.status === 200) {
-          console.log("Phone Verified!");
-          this.setState({ numberVerified: true });
-        }
-      });
+    const {
+      verificationCode: code,
+      phoneNumber: phone,
+      countryCode,
+    } = this.state;
+    if (validateVerificationCode(code)) {
+      requestVerifyCode(code, phone, countryCode, () =>
+        this.setState({ numberVerified: true })
+      );
     } else {
-      alert("Please enter a valid phone number.");
+      alert("Please enter a valid verification code.");
     }
   };
 
